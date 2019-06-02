@@ -1,3 +1,5 @@
+<p align="center"><img src="screenshots/screenshot.png" width=400></p>
+
 <h2 align="center">Batch Editing for Anki</h2>
 
 <p align="center">

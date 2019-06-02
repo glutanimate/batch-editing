@@ -7,9 +7,11 @@ Adds a new menu item to the card browser that allows you to:
 
 The changes will be applied to all selected notes that feature the selected field.
 
-### DEMO
+![](https://raw.githubusercontent.com/glutanimate/batch-editing/master/screenshots/screenshot.png)
 
-Here's a quick demo video that showcases these features:
+### USAGE
+
+Here's a quick instruction video that demonstrates these features:
 
 [![YouTube: Anki add-on demo: Batch Note Editing](https://i.ytimg.com/vi/iCZzcSnAeH4/mqdefault.jpg)](https://youtu.be/iCZzcSnAeH4)
 
