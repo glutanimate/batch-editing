@@ -1,0 +1,16 @@
+{
+    "display_name": "Batch Editing",
+    "module_name": "batch_editing",
+    "repo_name": "batch-editing",
+    "ankiweb_id": "291119185",
+    "author": "Glutanimate",
+    "contact": "https://glutanimate.com",
+    "homepage": "https://github.com/glutanimate/batch-editing",
+    "copyright_start": 2016,
+    "tags": "browser batch editor",
+    "conflicts": [],
+    "targets": [
+        "anki20",
+        "anki21"
+    ]
+}
