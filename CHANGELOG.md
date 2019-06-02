@@ -16,6 +16,8 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ### [Download](https://github.com/glutanimate/batch-editing/releases/tag/v0.3.0)
 
+**Important note for Anki 2.0 users**: As this release completely overhauls the add-on structure, you will have to uninstall any existing versions of the add-on before updating. Otherwise you might end up with duplicate versions of the add-on that would interfere with each other. This should not be an issue on Anki 2.1
+
 ### Fixed
 
 - 2.1: Fixed attaching images from the clipboard (#5, thanks to donfed for the report)
