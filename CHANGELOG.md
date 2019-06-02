@@ -12,6 +12,37 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed add-on to "Batch Editing"
+- Refactored add-on to improve stability and maintainability
+
+## 0.2.0 - 2017-08-23
+
+### Added
+
+- Anki 2.1 compatibility
+
+## 0.1.3 - 2017-08-06
+
+### Added
+
+- Ability to insert text as HTML
+
+## 0.1.2 - 2017-05-13
+
+### Fixed
+
+- Only insert line-breaks when necessary
+
+## 0.1.1 - 2016-12-11
+
+### Added
+
+- Support for adding text before existing content (thanks to @luminousspice for the idea)
+
+## 0.1.0 - 2016-12-08
+
 ### Added
 
 - Initial release of Batch Editing
