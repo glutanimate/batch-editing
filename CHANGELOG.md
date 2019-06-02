@@ -12,6 +12,10 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ## [Unreleased]
 
+## [0.3.0] - 2019-06-02
+
+### [Download](https://github.com/glutanimate/batch-editing/releases/tag/v0.3.0)
+
 ### Fixed
 
 - 2.1: Fixed attaching images from the clipboard (#5, thanks to donfed for the report)
