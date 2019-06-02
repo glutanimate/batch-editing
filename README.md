@@ -10,7 +10,7 @@
 <a title="Follow me on Twitter" href="https://twitter.com/intent/user?screen_name=glutanimate"><img src="https://img.shields.io/twitter/follow/glutanimate.svg"></a>
 </p>
 
-> Menial flashcard updating be gone!
+> Spend less time editing, and more time reviewing
 
 Extends the spaced-repetition flashcard app [Anki](https://apps.ankiweb.net/) with batch note editing capabilities.
 
