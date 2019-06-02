@@ -60,7 +60,7 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 - Initial release of Batch Editing
 
 [Unreleased]: https://github.com/glutanimate/batch-editing/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/glutanimate/batch-editing/tag/v0.3.0
+[0.3.0]: https://github.com/glutanimate/batch-editing/releases/tag/v0.3.0
 
 -----
 
