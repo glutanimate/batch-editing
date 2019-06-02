@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/batch-editing">
+    <file>icons/attach.svg</file>
+  </qresource>
+</RCC>

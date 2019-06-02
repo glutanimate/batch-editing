@@ -41,7 +41,17 @@ import tempfile
 
 from aqt.qt import *
 from aqt.utils import tooltip, askUser, getFile
+
 from anki.hooks import addHook
+from anki.lang import _
+from anki import version as anki_version
+
+from .gui import initializeQtResources
+
+ANKI20 = anki_version.startswith("2.0")
+unicode = str if not ANKI20 else unicode
+
+initializeQtResources()
 
 
 class BatchEditDialog(QDialog):
@@ -56,7 +66,7 @@ class BatchEditDialog(QDialog):
     def _setupUi(self):
         tlabel = QLabel("Content to add to or replace with:")
         image_btn = QPushButton(clicked=self._insertMedia)
-        image_btn.setIcon(QIcon(":/icons/mail-attachment.png"))
+        image_btn.setIcon(QIcon(":/batch-editing/icons/attach.svg"))
         image_btn.setToolTip(
             "Insert a media file reference (e.g. to an image)")
         press_action = QAction(self, triggered=image_btn.animateClick)
