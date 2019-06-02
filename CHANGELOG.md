@@ -12,6 +12,12 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ## [Unreleased]
 
+### Fixed
+
+- 2.1: Fixed attaching images from the clipboard (#5, thanks to donfed for the report)
+- 2.1: Fixed image icon (#5, thanks to reynie78 for the report)
+- 2.1: Pre-emptive fix for anki.lang errors
+
 ### Changed
 
 - Renamed add-on to "Batch Editing"
