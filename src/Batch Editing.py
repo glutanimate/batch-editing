@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Batch Edit Add-on for Anki
+# Batch Editing Add-on for Anki
 #
 # Copyright (C) 2016-2019  Aristotelis P. <https://glutanimate.com/>
 #
@@ -36,4 +36,4 @@ In case you opened this file from Anki: Please do not modify anything
 if you are not sure what you are doing.
 """
 
-import batch_edit  # noqa: F401
+import batch_editing  # noqa: F401
