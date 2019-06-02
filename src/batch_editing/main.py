@@ -36,14 +36,17 @@ Initializes add-on components.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import os, tempfile
+import os
+import tempfile
 
 from aqt.qt import *
 from aqt.utils import tooltip, askUser, getFile
 from anki.hooks import addHook
 
+
 class BatchEditDialog(QDialog):
     """Browser batch editing dialog"""
+
     def __init__(self, browser, nids):
         QDialog.__init__(self, parent=browser)
         self.browser = browser
@@ -54,7 +57,8 @@ class BatchEditDialog(QDialog):
         tlabel = QLabel("Content to add to or replace with:")
         image_btn = QPushButton(clicked=self._insertMedia)
         image_btn.setIcon(QIcon(":/icons/mail-attachment.png"))
-        image_btn.setToolTip("Insert a media file reference (e.g. to an image)")
+        image_btn.setToolTip(
+            "Insert a media file reference (e.g. to an image)")
         press_action = QAction(self, triggered=image_btn.animateClick)
         press_action.setShortcut(QKeySequence(_("Alt+i")))
         image_btn.addAction(press_action)
@@ -62,7 +66,7 @@ class BatchEditDialog(QDialog):
         top_hbox.addWidget(tlabel)
         top_hbox.insertStretch(1, stretch=1)
         top_hbox.addWidget(image_btn)
-        
+
         self.tedit = QPlainTextEdit()
         self.tedit.setTabChangesFocus(True)
 
@@ -76,28 +80,28 @@ class BatchEditDialog(QDialog):
         f_hbox.setAlignment(Qt.AlignLeft)
 
         button_box = QDialogButtonBox(Qt.Horizontal, self)
-        adda_btn = button_box.addButton("Add &after", 
-            QDialogButtonBox.ActionRole)
-        addb_btn = button_box.addButton("Add &before", 
-            QDialogButtonBox.ActionRole)
-        replace_btn = button_box.addButton("&Replace", 
-            QDialogButtonBox.ActionRole)
+        adda_btn = button_box.addButton("Add &after",
+                                        QDialogButtonBox.ActionRole)
+        addb_btn = button_box.addButton("Add &before",
+                                        QDialogButtonBox.ActionRole)
+        replace_btn = button_box.addButton("&Replace",
+                                           QDialogButtonBox.ActionRole)
         close_btn = button_box.addButton("&Cancel",
-            QDialogButtonBox.RejectRole)
+                                         QDialogButtonBox.RejectRole)
         adda_btn.setToolTip("Add after existing field contents")
         addb_btn.setToolTip("Add before existing field contents")
         replace_btn.setToolTip("Replace existing field contents")
         adda_btn.clicked.connect(lambda state, x="adda": self.onConfirm(x))
         addb_btn.clicked.connect(lambda state, x="addb": self.onConfirm(x))
-        replace_btn.clicked.connect(lambda state, x="replace": self.onConfirm(x))
+        replace_btn.clicked.connect(
+            lambda state, x="replace": self.onConfirm(x))
         close_btn.clicked.connect(self.close)
 
         self.cb_html = QCheckBox(self)
         self.cb_html.setText("Insert as HTML")
         self.cb_html.setChecked(False)
-        s = QShortcut(QKeySequence(_("Alt+H")), 
-            self, activated=lambda: self.cb_html.setChecked(True))
-
+        s = QShortcut(QKeySequence(_("Alt+H")),
+                      self, activated=lambda: self.cb_html.setChecked(True))
 
         bottom_hbox = QHBoxLayout()
         bottom_hbox.addWidget(self.cb_html)
@@ -142,7 +146,7 @@ class BatchEditDialog(QDialog):
 
     def _chooseFile(self):
         key = (_("Media") +
-               " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg "+
+               " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg " +
                "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 " +
                "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)")
         return getFile(self, _("Add Media"), None, key, key="media")
@@ -157,7 +161,7 @@ class BatchEditDialog(QDialog):
         if os.stat(image_path).st_size == 0:
             return False
         return unicode(image_path)
-            
+
     def onConfirm(self, mode):
         browser = self.browser
         nids = self.nids
@@ -166,12 +170,12 @@ class BatchEditDialog(QDialog):
         isHtml = self.cb_html.isChecked()
         if mode == "replace":
             q = (u"This will replace the contents of the <b>'{0}'</b> field "
-                u"in <b>{1} selected note(s)</b>. Proceed?").format(fld, len(nids))
+                 u"in <b>{1} selected note(s)</b>. Proceed?").format(fld, len(nids))
             if not askUser(q, parent=self):
                 return
         batchEditNotes(browser, mode, nids, fld, text, isHtml=isHtml)
         self.close()
-        
+
 
 def batchEditNotes(browser, mode, nids, fld, html, isHtml=False):
     if not isHtml:
@@ -226,5 +230,6 @@ def setupMenu(browser):
     a = menu.addAction('Batch Edit...')
     a.setShortcut(QKeySequence("Ctrl+Alt+B"))
     a.triggered.connect(lambda _, b=browser: onBatchEdit(b))
+
 
 addHook("browser.setupMenus", setupMenu)
