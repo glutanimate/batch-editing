@@ -10,7 +10,6 @@
     "tags": "browser batch editor",
     "conflicts": [],
     "targets": [
-        "anki20",
         "anki21"
     ]
 }

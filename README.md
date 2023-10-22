@@ -41,35 +41,20 @@ The easiest way to install Batch Editing is through [AnkiWeb](https://ankiweb.ne
 
 #### Manual installation <!-- omit in toc -->
 
-Please click on the entry corresponding to your Anki version:
+1. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/batch-editing/releases) (you might need to click on *Assets* below the description to reveal the download links)
+2. Double-click the downloaded file to install the add-on
 
 <details>
 
-<summary><i>Anki 2.1</i></summary>
+<summary><i>Alternative Method</i></summary>
 
-1. Make sure you have the [latest version](https://apps.ankiweb.net/#download) of Anki 2.1 installed. Earlier releases (e.g. found in various Linux distros) do not support `.ankiaddon` packages.
-2. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/batch-editing/releases) (you might need to click on *Assets* below the description to reveal the download links)
-3. From Anki's main window, head to *Tools* → *Add-ons*
-4. Drag-and-drop the `.ankiaddon` package onto the add-ons list
-5. Restart Anki
-
-</details>
-
-<details>
-
-<summary><i>Anki 2.0</i></summary>
-
-1. Go to *Tools* → *Add-ons* → *Open add-ons folder*
-2. Find and delete the `Batch Editing.py` file if it already exists.
-3. See if you can find a `batch_editing` folder. If so:
-    1. If the folder contains a `meta.json` file, copy the file to a safe location. This will allow you to preserve your current settings.
-    2. Proceed to delete the `batch_editing` folder
-4. Download and extract the latest Anki 2.0 add-on release from the [releases tab](https://github.com/glutanimate/batch-editing/releases) (you might need to click on *Assets* below the description to reveal the download links)
-5. Move the extracted `Batch Editing.py` and `batch_editing` into the add-ons folder
-6. Optional: Place the `meta.json` file back into the directory if you created a copy beforehand.
-7. Restart Anki
+1. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/batch-editing/releases) (you might need to click on *Assets* below the description to reveal the download links)
+2. From Anki's main window, head to *Tools* → *Add-ons*
+3. Drag-and-drop the `.ankiaddon` package onto the add-ons list
+4. Restart Anki
 
 </details>
+
 
 ### Documentation
 
@@ -95,7 +80,7 @@ Contributions are welcome! Please review the [contribution guidelines](./CONTRIB
 
 ### License and Credits
 
-*Batch Editing* is *Copyright © 2016-2019 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
+*Batch Editing* is *Copyright © 2016-2023 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
 
 All credit for the original idea goes to /u/TryhardasaurusRex on Reddit who commissioned this add-on.
 

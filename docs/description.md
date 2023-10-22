@@ -25,7 +25,7 @@ The add-on uses the first selected note to generate the field list you're presen
 
 ### CREDITS AND LICENSE
 
-*Copyright © 2016-2019 [Aristotelis P.](https://glutanimate.com/)  (Glutanimate)*
+*Copyright © 2016-2023 [Aristotelis P.](https://glutanimate.com/)  (Glutanimate)*
 
 All credit for the original idea goes to /u/TryhardasaurusRex on Reddit who commissioned this add-on.
 
