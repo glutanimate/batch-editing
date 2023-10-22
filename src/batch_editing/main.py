@@ -144,7 +144,7 @@ class BatchEditDialog(QDialog):
     def _getFields(self):
         nid = self.nids[0]
         mw = self.browser.mw
-        model = mw.col.getNote(nid).model()
+        model = mw.col.getNote(nid).note_type()
         fields = mw.col.models.fieldNames(model)
         return fields
 
