@@ -2,7 +2,7 @@
 
 # Batch Editing Add-on for Anki
 #
-# Copyright (C) 2016-2019  Aristotelis P. <https://glutanimate.com/>
+# Copyright (C) 2016-2023  Aristotelis P. <https://glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -33,23 +33,31 @@
 Initializes add-on components.
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
 import os
 import tempfile
 
-from aqt.qt import *
-from aqt.utils import tooltip, askUser, getFile
-
 from anki.hooks import addHook
 from anki.lang import _
-from anki import version as anki_version
+from aqt.qt import (
+    QAction,
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QHBoxLayout,
+    QIcon,
+    QKeySequence,
+    QLabel,
+    QPlainTextEdit,
+    QPushButton,
+    QShortcut,
+    Qt,
+    QVBoxLayout,
+)
+from aqt.utils import askUser, getFile, tooltip
 
 from .gui import initializeQtResources
-
-ANKI20 = anki_version.startswith("2.0")
-unicode = str if not ANKI20 else unicode
 
 initializeQtResources()
 
@@ -67,8 +75,7 @@ class BatchEditDialog(QDialog):
         tlabel = QLabel("Content to add to or replace with:")
         image_btn = QPushButton(clicked=self._insertMedia)
         image_btn.setIcon(QIcon(":/batch-editing/icons/attach.svg"))
-        image_btn.setToolTip(
-            "Insert a media file reference (e.g. to an image)")
+        image_btn.setToolTip("Insert a media file reference (e.g. to an image)")
         press_action = QAction(self, triggered=image_btn.animateClick)
         press_action.setShortcut(QKeySequence(_("Alt+i")))
         image_btn.addAction(press_action)
@@ -87,31 +94,37 @@ class BatchEditDialog(QDialog):
         f_hbox = QHBoxLayout()
         f_hbox.addWidget(flabel)
         f_hbox.addWidget(self.fsel)
-        f_hbox.setAlignment(Qt.AlignLeft)
+        f_hbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        button_box = QDialogButtonBox(Qt.Horizontal, self)
-        adda_btn = button_box.addButton("Add &after",
-                                        QDialogButtonBox.ActionRole)
-        addb_btn = button_box.addButton("Add &before",
-                                        QDialogButtonBox.ActionRole)
-        replace_btn = button_box.addButton("&Replace",
-                                           QDialogButtonBox.ActionRole)
-        close_btn = button_box.addButton("&Cancel",
-                                         QDialogButtonBox.RejectRole)
+        button_box = QDialogButtonBox(Qt.Orientation.Horizontal, self)
+        adda_btn = button_box.addButton(
+            "Add &after", QDialogButtonBox.ButtonRole.ActionRole
+        )
+        addb_btn = button_box.addButton(
+            "Add &before", QDialogButtonBox.ButtonRole.ActionRole
+        )
+        replace_btn = button_box.addButton(
+            "&Replace", QDialogButtonBox.ButtonRole.ActionRole
+        )
+        close_btn = button_box.addButton(
+            "&Cancel", QDialogButtonBox.ButtonRole.RejectRole
+        )
         adda_btn.setToolTip("Add after existing field contents")
         addb_btn.setToolTip("Add before existing field contents")
         replace_btn.setToolTip("Replace existing field contents")
         adda_btn.clicked.connect(lambda state, x="adda": self.onConfirm(x))
         addb_btn.clicked.connect(lambda state, x="addb": self.onConfirm(x))
-        replace_btn.clicked.connect(
-            lambda state, x="replace": self.onConfirm(x))
+        replace_btn.clicked.connect(lambda state, x="replace": self.onConfirm(x))
         close_btn.clicked.connect(self.close)
 
         self.cb_html = QCheckBox(self)
         self.cb_html.setText("Insert as HTML")
         self.cb_html.setChecked(False)
-        s = QShortcut(QKeySequence(_("Alt+H")),
-                      self, activated=lambda: self.cb_html.setChecked(True))
+        s = QShortcut(
+            QKeySequence(_("Alt+H")),
+            self,
+            activated=lambda: self.cb_html.setChecked(True),
+        )
 
         bottom_hbox = QHBoxLayout()
         bottom_hbox.addWidget(self.cb_html)
@@ -148,29 +161,31 @@ class BatchEditDialog(QDialog):
         new = []
         if current:
             # avoid duplicate newlines
-            new = current.strip('\n').split('\n') + [html]
+            new = current.strip("\n").split("\n") + [html]
             new = "\n".join(new)
         else:
             new = html
         self.tedit.setPlainText(new)
 
     def _chooseFile(self):
-        key = (_("Media") +
-               " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg " +
-               "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 " +
-               "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)")
+        key = (
+            _("Media")
+            + " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg "
+            + "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 "
+            + "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)"
+        )
         return getFile(self, _("Add Media"), None, key, key="media")
 
     def _getClip(self):
         clip = QApplication.clipboard()
         if not clip or not clip.mimeData().imageData():
             return False
-        handle, image_path = tempfile.mkstemp(suffix='.png')
+        handle, image_path = tempfile.mkstemp(suffix=".png")
         clip.image().save(image_path)
         clip.clear()
         if os.stat(image_path).st_size == 0:
             return False
-        return unicode(image_path)
+        return image_path
 
     def onConfirm(self, mode):
         browser = self.browser
@@ -179,8 +194,10 @@ class BatchEditDialog(QDialog):
         text = self.tedit.toPlainText()
         isHtml = self.cb_html.isChecked()
         if mode == "replace":
-            q = (u"This will replace the contents of the <b>'{0}'</b> field "
-                 u"in <b>{1} selected note(s)</b>. Proceed?").format(fld, len(nids))
+            q = (
+                "This will replace the contents of the <b>'{0}'</b> field "
+                "in <b>{1} selected note(s)</b>. Proceed?"
+            ).format(fld, len(nids))
             if not askUser(q, parent=self):
                 return
         batchEditNotes(browser, mode, nids, fld, text, isHtml=isHtml)
@@ -190,7 +207,7 @@ class BatchEditDialog(QDialog):
 def batchEditNotes(browser, mode, nids, fld, html, isHtml=False):
     if not isHtml:
         # convert newlines to <br> elms
-        html = html.replace('\n', '<br/>')
+        html = html.replace("\n", "<br/>")
     mw = browser.mw
     mw.checkpoint("batch edit")
     mw.progress.start()
@@ -202,7 +219,7 @@ def batchEditNotes(browser, mode, nids, fld, html, isHtml=False):
             content = note[fld]
             if isHtml:
                 spacer = "\n"
-                breaks = (spacer)
+                breaks = spacer
             else:
                 breaks = ("<div>", "</div>", "<br>", "<br/>")
                 spacer = "<br/>"
@@ -231,13 +248,13 @@ def onBatchEdit(browser):
         tooltip("No cards selected.")
         return
     dialog = BatchEditDialog(browser, nids)
-    dialog.exec_()
+    dialog.exec()
 
 
 def setupMenu(browser):
     menu = browser.form.menuEdit
     menu.addSeparator()
-    a = menu.addAction('Batch Edit...')
+    a = menu.addAction("Batch Edit...")
     a.setShortcut(QKeySequence("Ctrl+Alt+B"))
     a.triggered.connect(lambda _, b=browser: onBatchEdit(b))
 
