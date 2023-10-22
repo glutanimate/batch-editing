@@ -34,7 +34,6 @@ from typing import TYPE_CHECKING, Sequence, cast, Optional
 import os
 import tempfile
 
-from anki.lang import _
 from aqt.qt import (
     QAction,
     QApplication,
@@ -80,7 +79,7 @@ class BatchEditDialog(QDialog):
         image_button.setToolTip("Insert a media file reference (e.g. to an image)")
         press_action = QAction(self)
         press_action.triggered.connect(image_button.animateClick)
-        press_action.setShortcut(QKeySequence(_("Alt+i")))
+        press_action.setShortcut(QKeySequence("Alt+i"))
         image_button.addAction(press_action)
         top_hbox = QHBoxLayout()
         top_hbox.addWidget(text_field_label)
@@ -132,7 +131,7 @@ class BatchEditDialog(QDialog):
         self.checkbox_html.setText("Insert as HTML")
         self.checkbox_html.setChecked(False)
         shortcut = QShortcut(
-            QKeySequence(_("Alt+H")),
+            QKeySequence("Alt+H"),
             self,
         )
         shortcut.activated.connect(self.checkbox_html.toggle)
@@ -189,12 +188,12 @@ class BatchEditDialog(QDialog):
 
     def choose_file(self) -> str:
         key = (
-            _("Media")
-            + " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg "
-            + "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 "
-            + "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)"
+            "Media "
+            "(*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg "
+            "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 "
+            "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)"
         )
-        return cast(str, getFile(self, _("Add Media"), None, key, key="media"))
+        return cast(str, getFile(self, "Add Media", None, key, key="media"))
 
     def get_clipboard(self) -> Optional[str]:
         if (
