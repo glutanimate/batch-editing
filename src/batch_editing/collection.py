@@ -29,8 +29,22 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-def batch_edit_notes(browser, mode, nids, fld, html, isHtml=False):
-    if not isHtml:
+from typing import TYPE_CHECKING, Literal, Sequence
+
+if TYPE_CHECKING:
+    from aqt.browser.browser import Browser
+    from anki.notes import NoteId
+
+
+def batch_edit_notes(
+    browser: "Browser",
+    mode: Literal["adda", "addb", "replace"],
+    nids: Sequence["NoteId"],
+    fld: str,
+    html: str,
+    is_html: bool = False,
+):
+    if not is_html:
         # convert newlines to <br> elms
         html = html.replace("\n", "<br/>")
     mw = browser.mw
@@ -39,10 +53,10 @@ def batch_edit_notes(browser, mode, nids, fld, html, isHtml=False):
     browser.model.beginReset()
     cnt = 0
     for nid in nids:
-        note = mw.col.getNote(nid)
+        note = mw.col.get_note(nid)
         if fld in note:
             content = note[fld]
-            if isHtml:
+            if is_html:
                 spacer = "\n"
                 breaks = spacer
             else:

@@ -223,6 +223,6 @@ class BatchEditDialog(QDialog):
             ).format(fld, len(nids))
             if not askUser(q, parent=self):
                 return
-        cnt = batch_edit_notes(browser, mode, nids, fld, text, isHtml=isHtml)
+        cnt = batch_edit_notes(browser, mode, nids, fld, text, is_html=isHtml)
         self.close()
         tooltip("<b>Updated</b> {0} notes.".format(cnt), parent=browser)
