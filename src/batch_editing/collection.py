@@ -29,42 +29,39 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-"""
-Initializes add-on components.
-"""
-
-from typing import TYPE_CHECKING
-
-from aqt.gui_hooks import browser_menus_did_init
-from aqt.qt import (
-    QKeySequence,
-)
-from aqt.utils import tooltip
-
-from .dialog import BatchEditDialog
-from .gui import initialize_qt_resources
-
-if TYPE_CHECKING:
-    from aqt.browser.browser import Browser
-
-
-def on_batch_edit(browser: "Browser"):
-    if not (nids := browser.selectedNotes()):
-        tooltip("No cards selected.")
-        return
-    if (collection := browser.mw.col) is None:
-        return
-    dialog = BatchEditDialog(browser=browser, collection=collection, nids=nids)
-    dialog.exec()
-
-
-def setup_menu(browser: "Browser"):
-    menu = browser.form.menuEdit
-    menu.addSeparator()
-    a = menu.addAction("Batch Edit...")
-    a.setShortcut(QKeySequence("Ctrl+Alt+B"))
-    a.triggered.connect(lambda _, b=browser: on_batch_edit(b))
-
-
-initialize_qt_resources()
-browser_menus_did_init.append(setup_menu)
+def batch_edit_notes(browser, mode, nids, fld, html, isHtml=False):
+    if not isHtml:
+        # convert newlines to <br> elms
+        html = html.replace("\n", "<br/>")
+    mw = browser.mw
+    mw.checkpoint("batch edit")
+    mw.progress.start()
+    browser.model.beginReset()
+    cnt = 0
+    for nid in nids:
+        note = mw.col.getNote(nid)
+        if fld in note:
+            content = note[fld]
+            if isHtml:
+                spacer = "\n"
+                breaks = spacer
+            else:
+                breaks = ("<div>", "</div>", "<br>", "<br/>")
+                spacer = "<br/>"
+            if mode == "adda":
+                if content.endswith(breaks):
+                    spacer = ""
+                note[fld] += spacer + html
+            elif mode == "addb":
+                if content.startswith(breaks):
+                    spacer = ""
+                note[fld] = html + spacer + content
+            elif mode == "replace":
+                note[fld] = html
+            cnt += 1
+            note.flush()
+    browser.model.endReset()
+    mw.requireReset()
+    mw.progress.finish()
+    mw.reset()
+    return cnt
