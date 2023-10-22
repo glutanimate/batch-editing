@@ -29,7 +29,7 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-from typing import TYPE_CHECKING, Sequence, cast
+from typing import TYPE_CHECKING, Sequence, cast, Optional
 
 import os
 import tempfile
@@ -52,7 +52,7 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
 )
-from aqt.utils import askUser, getFile, tooltip
+from aqt.utils import askUser, getFile, tooltip, show_critical
 
 from .collection import batch_edit_notes
 
@@ -60,7 +60,6 @@ if TYPE_CHECKING:
     from aqt.browser.browser import Browser
     from anki.notes import NoteId
     from anki.collection import Collection
-
 
 
 class BatchEditDialog(QDialog):
@@ -73,9 +72,7 @@ class BatchEditDialog(QDialog):
         self._browser = browser
         self._collection = collection
         self._nids = nids
-        self.setup_ui()
 
-    def setup_ui(self):
         text_field_label = QLabel("Content to add to or replace with:")
         image_button = QPushButton(self)
         image_button.clicked.connect(self.insert_media)
@@ -96,11 +93,15 @@ class BatchEditDialog(QDialog):
         field_label = QLabel("In this field:")
         self.field_selector = QComboBox()
         fields = self.get_fields()
+        if fields is None:
+            show_critical("Error: Could not determine note type of note")
+            self.close()
+            return
         self.field_selector.addItems(fields)
-        f_hbox = QHBoxLayout()
-        f_hbox.addWidget(field_label)
-        f_hbox.addWidget(self.field_selector)
-        f_hbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        field_hbox = QHBoxLayout()
+        field_hbox.addWidget(field_label)
+        field_hbox.addWidget(self.field_selector)
+        field_hbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         button_box = QDialogButtonBox(Qt.Orientation.Horizontal, self)
         add_after_button = cast(
@@ -143,7 +144,7 @@ class BatchEditDialog(QDialog):
         vbox_main = QVBoxLayout()
         vbox_main.addLayout(top_hbox)
         vbox_main.addWidget(self.text_edit)
-        vbox_main.addLayout(f_hbox)
+        vbox_main.addLayout(field_hbox)
         vbox_main.addLayout(bottom_hbox)
         self.setLayout(vbox_main)
         self.text_edit.setFocus()
@@ -151,11 +152,12 @@ class BatchEditDialog(QDialog):
         self.setMinimumHeight(400)
         self.setWindowTitle("Batch Edit Selected Notes")
 
-    def get_fields(self):
+    def get_fields(self) -> Optional[list[str]]:
         nid = self._nids[0]
-        mw = self._browser.mw
-        model = self._collection.getNote(nid).note_type()
-        fields = self._collection.models.fieldNames(model)
+        model = self._collection.get_note(nid).note_type()
+        if model is None:
+            return None
+        fields = self._collection.models.field_names(model)
         return fields
 
     def insert_media(self):
@@ -164,37 +166,48 @@ class BatchEditDialog(QDialog):
             media_file = self.choose_file()
         if not media_file:
             return
+        if not (editor := self._browser.editor):
+            return
+        filename = self._collection.media.add_file(media_file)
+        html = editor.fnameToLink(filename)
         html = self._browser.editor._addMedia(media_file, canDelete=True)
-        # need to unescape images again:
-        html = self._collection.media.escapeImages(html, unescape=True)
+        # need to unescape images again:"
+        if hasattr(self._collection.media, "escape_images"):
+            html = self._collection.media.escape_images(html, unescape=True)
+        else:
+            html = self._collection.media.escapeImages(  # type: ignore[attr-defined]
+                html, unescape=True
+            )
         current = self.text_edit.toPlainText()
-        new = []
-        if current:
-            # avoid duplicate newlines
-            new = [*current.strip("\n").split("\n"), html]
-            new = "\n".join(new)
+        fragments = []
+        if current:  # avoid duplicate newlines
+            fragments = [*current.strip("\n").split("\n"), html]
+            new = "\n".join(fragments)
         else:
             new = html
         self.text_edit.setPlainText(new)
 
-    def choose_file(self):
+    def choose_file(self) -> str:
         key = (
             _("Media")
             + " (*.jpg *.png *.gif *.tiff *.svg *.tif *.jpeg "
             + "*.mp3 *.ogg *.wav *.avi *.ogv *.mpg *.mpeg *.mov *.mp4 "
             + "*.mkv *.ogx *.ogv *.oga *.flv *.swf *.flac)"
         )
-        return getFile(self, _("Add Media"), None, key, key="media")
+        return cast(str, getFile(self, _("Add Media"), None, key, key="media"))
 
-    def get_clipboard(self):
-        clip = QApplication.clipboard()
-        if not clip or not clip.mimeData().imageData():
-            return False
+    def get_clipboard(self) -> Optional[str]:
+        if (
+            not (clip := QApplication.clipboard())
+            or not (mimedata := clip.mimeData())
+            or not mimedata.imageData()
+        ):
+            return None
         handle, image_path = tempfile.mkstemp(suffix=".png")
         clip.image().save(image_path)
         clip.clear()
         if os.stat(image_path).st_size == 0:
-            return False
+            return None
         return image_path
 
     def on_confirm(self, mode):
