@@ -36,8 +36,8 @@ Initializes add-on components.
 import os
 import tempfile
 
-from anki.hooks import addHook
 from anki.lang import _
+from aqt.gui_hooks import browser_menus_did_init
 from aqt.qt import (
     QAction,
     QApplication,
@@ -57,9 +57,9 @@ from aqt.qt import (
 )
 from aqt.utils import askUser, getFile, tooltip
 
-from .gui import initializeQtResources
+from .gui import initialize_qt_resources
 
-initializeQtResources()
+initialize_qt_resources()
 
 
 class BatchEditDialog(QDialog):
@@ -259,4 +259,4 @@ def setupMenu(browser):
     a.triggered.connect(lambda _, b=browser: onBatchEdit(b))
 
 
-addHook("browser.setupMenus", setupMenu)
+browser_menus_did_init.append(setupMenu)
