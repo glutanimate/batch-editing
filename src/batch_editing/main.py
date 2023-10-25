@@ -33,12 +33,10 @@
 Initializes add-on components.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from aqt.gui_hooks import browser_menus_did_init
-from aqt.qt import (
-    QKeySequence,
-)
+from aqt.qt import QKeySequence, QMenu, QAction
 from aqt.utils import tooltip
 
 from .dialog import BatchEditDialog
@@ -59,11 +57,11 @@ def on_batch_edit(browser: "Browser"):
 
 
 def setup_menu(browser: "Browser"):
-    menu = browser.form.menuEdit
+    menu: QMenu = browser.form.menuEdit
     menu.addSeparator()
-    a = menu.addAction("Batch Edit...")
-    a.setShortcut(QKeySequence("Ctrl+Alt+B"))
-    a.triggered.connect(lambda _, b=browser: on_batch_edit(b))
+    action = cast(QAction, menu.addAction("Batch Edit..."))
+    action.setShortcut(QKeySequence("Ctrl+Alt+B"))
+    action.triggered.connect(lambda _, b=browser: on_batch_edit(b))
 
 
 initialize_qt_resources()
