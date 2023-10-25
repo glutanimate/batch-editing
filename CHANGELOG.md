@@ -12,6 +12,18 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ## [Unreleased]
 
+### Added
+
+- Added support for Anki 23.10 (thanks to @khonkortisan for the report)
+
+### Fixed
+
+- Fixed image button icon not working (thanks to @dollajas for the report)
+
+### Changed
+
+- Modernized and rewrote large parts of the codebase
+
 ## [0.3.0] - 2019-06-02
 
 ### [Download](https://github.com/glutanimate/batch-editing/releases/tag/v0.3.0)
