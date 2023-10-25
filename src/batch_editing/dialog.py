@@ -75,7 +75,7 @@ class BatchEditDialog(QDialog):
         text_field_label = QLabel("Content to add to or replace with:")
         image_button = QPushButton(self)
         image_button.clicked.connect(self.insert_media)
-        image_button.setIcon(QIcon(":/batch-editing/icons/attach.svg"))
+        image_button.setIcon(QIcon("batch-editing:icons/attach.svg"))
         image_button.setToolTip("Insert a media file reference (e.g. to an image)")
         press_action = QAction(self)
         press_action.triggered.connect(image_button.animateClick)
