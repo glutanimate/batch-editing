@@ -31,7 +31,7 @@
 
 import os
 import tempfile
-from typing import TYPE_CHECKING, Optional, Sequence, cast
+from typing import TYPE_CHECKING, Optional, Sequence, cast, List
 
 from aqt.qt import (
     QAction,
@@ -153,7 +153,7 @@ class BatchEditDialog(QDialog):
         self.setMinimumHeight(400)
         self.setWindowTitle("Batch Edit Selected Notes")
 
-    def get_fields(self) -> Optional[list[str]]:
+    def get_fields(self) -> Optional[List[str]]:
         nid = self._nids[0]
         model = self._collection.get_note(nid).note_type()
         if model is None:
