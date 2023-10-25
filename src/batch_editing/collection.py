@@ -29,53 +29,59 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-from typing import TYPE_CHECKING, Literal, Sequence
+from enum import Enum
+from typing import TYPE_CHECKING, Sequence, Union
 
 if TYPE_CHECKING:
-    from aqt.browser.browser import Browser
-    from anki.notes import NoteId
+    from anki.collection import Collection
+    from anki.notes import Note, NoteId
 
 
-def batch_edit_notes(
-    browser: "Browser",
-    mode: Literal["adda", "addb", "replace"],
-    nids: Sequence["NoteId"],
-    fld: str,
+class EditMode(Enum):
+    ADD_AFTER = 0
+    ADD_BEFORE = 1
+    REPLACE = 2
+
+
+def edit_notes(
+    collection: "Collection",
+    note_ids: Sequence["NoteId"],
+    mode: EditMode,
+    field_name: str,
     html: str,
-    is_html: bool = False,
-):
+    is_html: bool,
+) -> Sequence["Note"]:
     if not is_html:
         # convert newlines to <br> elms
         html = html.replace("\n", "<br/>")
-    mw = browser.mw
-    mw.checkpoint("batch edit")
-    mw.progress.start()
-    browser.model.beginReset()
-    cnt = 0
-    for nid in nids:
-        note = mw.col.get_note(nid)
-        if fld in note:
-            content = note[fld]
+
+    modified_notes: list["Note"] = []
+    for nid in note_ids:
+        note = collection.get_note(nid)
+        if field_name in note:
+            content = note[field_name]
+            breaks: Union[str, tuple[str, ...]]
+
             if is_html:
                 spacer = "\n"
                 breaks = spacer
             else:
                 breaks = ("<div>", "</div>", "<br>", "<br/>")
                 spacer = "<br/>"
-            if mode == "adda":
+
+            if mode == EditMode.ADD_AFTER:
                 if content.endswith(breaks):
                     spacer = ""
-                note[fld] += spacer + html
-            elif mode == "addb":
+                note[field_name] += spacer + html
+            elif mode == EditMode.ADD_BEFORE:
                 if content.startswith(breaks):
                     spacer = ""
-                note[fld] = html + spacer + content
-            elif mode == "replace":
-                note[fld] = html
-            cnt += 1
-            note.flush()
-    browser.model.endReset()
-    mw.requireReset()
-    mw.progress.finish()
-    mw.reset()
-    return cnt
+                note[field_name] = html + spacer + content
+            elif mode == EditMode.REPLACE:
+                note[field_name] = html
+            else:
+                print(f"Unsupported edit mode {mode}")
+                continue
+
+            modified_notes.append(note)
+    return modified_notes

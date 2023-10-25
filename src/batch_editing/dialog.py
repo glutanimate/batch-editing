@@ -29,10 +29,9 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-from typing import TYPE_CHECKING, Sequence, cast, Optional
-
 import os
 import tempfile
+from typing import TYPE_CHECKING, Optional, Sequence, cast
 
 from aqt.qt import (
     QAction,
@@ -51,14 +50,15 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
 )
-from aqt.utils import askUser, getFile, tooltip, show_critical
+from aqt.utils import askUser, getFile, showCritical, tooltip
 
-from .collection import batch_edit_notes
+from .collection import EditMode
+from .operation import batch_edit_notes
 
 if TYPE_CHECKING:
-    from aqt.browser.browser import Browser
-    from anki.notes import NoteId
     from anki.collection import Collection
+    from anki.notes import NoteId
+    from aqt.browser.browser import Browser
 
 
 class BatchEditDialog(QDialog):
@@ -93,7 +93,7 @@ class BatchEditDialog(QDialog):
         self.field_selector = QComboBox()
         fields = self.get_fields()
         if fields is None:
-            show_critical("Error: Could not determine note type of note")
+            showCritical("Error: Could not determine note type of note")
             self.close()
             return
         self.field_selector.addItems(fields)
@@ -122,9 +122,11 @@ class BatchEditDialog(QDialog):
         add_after_button.setToolTip("Add after existing field contents")
         add_before_button.setToolTip("Add before existing field contents")
         replace_button.setToolTip("Replace existing field contents")
-        add_after_button.clicked.connect(lambda state, x="adda": self.on_confirm(x))
-        add_before_button.clicked.connect(lambda state, x="addb": self.on_confirm(x))
-        replace_button.clicked.connect(lambda state, x="replace": self.on_confirm(x))
+        add_after_button.clicked.connect(lambda _: self.on_confirm(EditMode.ADD_AFTER))
+        add_before_button.clicked.connect(
+            lambda _: self.on_confirm(EditMode.ADD_BEFORE)
+        )
+        replace_button.clicked.connect(lambda _: self.on_confirm(EditMode.REPLACE))
         close_button.clicked.connect(self.close)
 
         self.checkbox_html = QCheckBox(self)
@@ -209,19 +211,30 @@ class BatchEditDialog(QDialog):
             return None
         return image_path
 
-    def on_confirm(self, mode):
+    def on_confirm(self, mode: EditMode):
         browser = self._browser
-        nids = self._nids
-        fld = self.field_selector.currentText()
+        note_ids = self._nids
+        field_name = self.field_selector.currentText()
         text = self.text_edit.toPlainText()
-        isHtml = self.checkbox_html.isChecked()
-        if mode == "replace":
+        is_html = self.checkbox_html.isChecked()
+        if mode == EditMode.REPLACE:
             q = (
                 "This will replace the contents of the <b>'{0}'</b> field "
                 "in <b>{1} selected note(s)</b>. Proceed?"
-            ).format(fld, len(nids))
+            ).format(field_name, len(note_ids))
             if not askUser(q, parent=self):
                 return
-        cnt = batch_edit_notes(browser, mode, nids, fld, text, is_html=isHtml)
-        self.close()
-        tooltip("<b>Updated</b> {0} notes.".format(cnt), parent=browser)
+
+        def on_edits_complete(count: int):
+            self.close()
+            tooltip(f"<b>Updated</b> {count} notes.", parent=browser)
+
+        batch_edit_notes(
+            parent=self,
+            mode=mode,
+            note_ids=note_ids,
+            field_name=field_name,
+            html=text,
+            is_html=is_html,
+            on_complete=on_edits_complete,
+        )
