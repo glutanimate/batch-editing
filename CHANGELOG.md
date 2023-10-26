@@ -19,6 +19,7 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 ### Fixed
 
 - Fixed image button icon not working (thanks to @dollajas for the report)
+- Fixed image format changing from PNG to JPG when pasting images (thanks to @AH349 for the report)
 
 ### Changed
 

@@ -51,6 +51,7 @@ from aqt.qt import (
     QVBoxLayout,
 )
 from aqt.utils import askUser, getFile, showCritical, tooltip
+from anki.config import Config
 
 from .collection import EditMode
 from .operation import batch_edit_notes
@@ -204,7 +205,12 @@ class BatchEditDialog(QDialog):
             or not mimedata.imageData()
         ):
             return None
-        handle, image_path = tempfile.mkstemp(suffix=".png")
+        
+        if self._collection.get_config_bool(Config.Bool.PASTE_IMAGES_AS_PNG):
+            suffix = ".png"
+        else:
+            suffix = ".jpg"
+        handle, image_path = tempfile.mkstemp(suffix=suffix)
         clip.image().save(image_path)
         clip.clear()
         if os.stat(image_path).st_size == 0:
