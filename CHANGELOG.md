@@ -28,6 +28,7 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 ### Changed
 
 - Modernized and rewrote large parts of the codebase
+- Fixed deprecated use of `note.model` (thanks to @Arthur-Milchior, #17)
 
 ## [0.3.0] - 2019-06-02
 
