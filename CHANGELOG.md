@@ -12,6 +12,10 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ## [Unreleased]
 
+## [0.4.0] - 2023-10-26
+
+### [Download](https://github.com/glutanimate/batch-editing/releases/tag/v0.4.0)
+
 ### Added
 
 - Added support for Anki 23.10 (thanks to @khonkortisan for the report)
@@ -72,7 +76,8 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 - Initial release of Batch Editing
 
-[Unreleased]: https://github.com/glutanimate/batch-editing/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/glutanimate/batch-editing/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/glutanimate/batch-editing/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/glutanimate/batch-editing/releases/tag/v0.3.0
 
 -----
