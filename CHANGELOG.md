@@ -18,7 +18,7 @@ If you enjoy Batch Editing, please consider supporting my work on Patreon, or by
 
 ### Added
 
-- Added support for Anki 23.10 (thanks to @khonkortisan for the report)
+- Added support for Anki 23.10 (thanks to @khonkhortisan for the report)
 
 ### Fixed
 
