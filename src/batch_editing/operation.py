@@ -66,7 +66,7 @@ def batch_edit_notes(
             is_html=is_html,
         )
 
-        undo_entry_id = collection.add_custom_undo_entry("Batch Editing: Edit Notes")
+        undo_entry_id = collection.add_custom_undo_entry("Batch Edit")
         changes = collection.update_notes(modified_notes)
         collection.merge_undo_entries(undo_entry_id)
 
